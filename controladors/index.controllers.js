@@ -1,11 +1,12 @@
 const bcrypt = require('bcrypt');
-const { Pool } = require('pg');
+// ❌ ELIMINA AQUESTA LÍNIA:
+// const { Pool } = require('pg');
 const jwt = require('jsonwebtoken');
 
-// ⚠️ CANVIA AIXÒ per MySQL en lloc de PostgreSQL
+// ✅ NOMÉS NECESSITES MYSQL2
 const mysql = require('mysql2/promise');
 
-// Crear pool de connexions a MySQL (no PostgreSQL)
+// Crear pool de connexions a MySQL
 const pool = mysql.createPool({
   host: 'localhost',
   user: 'api',
