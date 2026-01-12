@@ -1,31 +1,13 @@
 const express = require('express');
 const app = express();
 const cors = require('cors');
-const { expressjwt: jwt } = require("express-jwt");
-const fs = require('fs');
-const https = require('https');
 
 // Middlewares
 app.use(express.json());
 app.use(cors({
-  origin: ['http://localhost:4321', 'http://localhost:3000'],
+  origin: ['http://localhost:4321', 'http://localhost:3000', '*'], // Afegit * per acceptar totes les origins
   credentials: true
 }));
-
-// ⚠️ JWT opcional per aquestes rutes (sense autenticació per simplicitat)
-// Si vols JWT, descomenta això:
-/*
-app.use(jwt({
-  secret: "Torello2",
-  algorithms: ['HS256']
-}).unless({
-  path: [
-    '/health',
-    '/stats/:userId',
-    '/stats/global'
-  ]
-}));
-*/
 
 // Logging de requests
 app.use((req, res, next) => {
@@ -58,29 +40,39 @@ app.use((req, res) => {
   });
 });
 
-// Opcions HTTPS (si vols utilitzar-les)
-const httpsOptionDev = {
-  key: fs.readFileSync("C:\\Users\\Tomàs\\Desktop\\42I-Digitalització\\EX2\\cert\\server.key"),
-  cert: fs.readFileSync("C:\\Users\\Tomàs\\Desktop\\42I-Digitalització\\EX2\\cert\\server-crt"),
-  requestCert: true,
-  rejectUnauthorized: false
-};
+// Gestió d'errors globals
+app.use((err, req, res, next) => {
+  console.error('❌ Error no capturat:', err);
+  res.status(500).json({
+    success: false,
+    error: 'Error intern del servidor',
+    message: process.env.NODE_ENV === 'development' ? err.message : undefined
+  });
+});
 
-// ⚠️ Canvia a HTTP normal per facilitar proves
-// HTTPS:
-// https.createServer(httpsOptionDev, app).listen(3000, () => {
-//   console.log('🔒 Servidor HTTPS escoltant en el port:', 3000);
-// });
+// Iniciar servidor HTTP
+const PORT = process.env.PORT || 3000;
 
-// HTTP (més senzill per proves):
-app.listen(3000, () => {
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`
 ╔════════════════════════════════════════╗
 ║   🌱 API FreshExpress en execució     ║
 ║                                        ║
-║   🌐 URL: http://localhost:3000       ║
+║   🌐 URL: http://0.0.0.0:${PORT}         ║
 ║   📊 Health: /health                   ║
 ║   👤 Stats: /stats/:userId             ║
+║   🌍 Global: /stats/global             ║
 ╚════════════════════════════════════════╝
   `);
+});
+
+// Gestió de tancament correcte
+process.on('SIGTERM', () => {
+  console.log('🛑 Tancant servidor...');
+  process.exit(0);
+});
+
+process.on('SIGINT', () => {
+  console.log('🛑 Tancant servidor...');
+  process.exit(0);
 });
