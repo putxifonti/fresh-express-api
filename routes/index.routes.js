@@ -4,8 +4,7 @@ const {
   getUserStats, 
   healthCheck, 
   getGlobalStats,
-  getEmpresasDisponibles,  
-  getEmpresaById           
+  getEmpresasDisponibles
 } = require('../controladors/index.controllers');
 
 // Health check
@@ -15,6 +14,5 @@ router.get('/health', healthCheck);
 router.get('/stats/global', getGlobalStats);
 router.get('/stats/:userId', getUserStats);
 router.get('/empresas', getEmpresasDisponibles);
-router.get('/empresas/:empresaId', getEmpresaById);
 
 module.exports = router;

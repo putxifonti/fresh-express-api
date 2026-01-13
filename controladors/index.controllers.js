@@ -149,35 +149,31 @@ const getEmpresasDisponibles = async (req, res) => {
   try {
     console.log('🏢 Obtenint llista d\'empreses disponibles...');
 
-    // Consulta per obtenir empreses actives
+    // ⭐ AQUESTA ÉS LA MATEIXA CONSULTA QUE productes.astro
     const [empresas] = await pool.execute(
       `SELECT 
         id,
         nombre,
-        descripcion,
         logo_url,
+        descripcion,
         categoria,
-        valoracion,
-        entregas_completadas,
-        activo,
-        fecha_registro
+        activo
       FROM empresas 
       WHERE activo = 1
       ORDER BY nombre ASC`
     );
+
+    console.log(`✅ ${empresas.length} empreses trobades`);
 
     return res.status(200).json({
       success: true,
       empresas: empresas.map(emp => ({
         id: emp.id,
         nombre: emp.nombre,
-        descripcion: emp.descripcion || '',
         logoUrl: emp.logo_url || '',
+        descripcion: emp.descripcion || '',
         categoria: emp.categoria || 'General',
-        valoracion: Number(emp.valoracion) || 0,
-        entregasCompletadas: Number(emp.entregas_completadas) || 0,
-        activo: emp.activo === 1,
-        fechaRegistro: emp.fecha_registro
+        activo: emp.activo === 1
       })),
       total: empresas.length,
       timestamp: new Date().toISOString()
@@ -188,81 +184,7 @@ const getEmpresasDisponibles = async (req, res) => {
     return res.status(500).json({
       success: false,
       error: 'Error intern del servidor',
-      message: process.env.NODE_ENV === 'development' ? error.message : undefined
-    });
-  }
-};
-
-// Obtenir detalls d'una empresa específica
-const getEmpresaById = async (req, res) => {
-  try {
-    const { empresaId } = req.params;
-
-    if (!empresaId || isNaN(empresaId)) {
-      return res.status(400).json({
-        success: false,
-        error: 'ID d\'empresa invàlid'
-      });
-    }
-
-    console.log(`🏢 Obtenint detalls de l'empresa ${empresaId}...`);
-
-    const [empresa] = await pool.execute(
-      `SELECT 
-        id,
-        nombre,
-        descripcion,
-        logo_url,
-        categoria,
-        valoracion,
-        entregas_completadas,
-        direccion,
-        telefono,
-        email,
-        horario_apertura,
-        horario_cierre,
-        activo,
-        fecha_registro
-      FROM empresas 
-      WHERE id = ?`,
-      [empresaId]
-    );
-
-    if (empresa.length === 0) {
-      return res.status(404).json({
-        success: false,
-        error: 'Empresa no trobada'
-      });
-    }
-
-    const emp = empresa[0];
-
-    return res.status(200).json({
-      success: true,
-      empresa: {
-        id: emp.id,
-        nombre: emp.nombre,
-        descripcion: emp.descripcion || '',
-        logoUrl: emp.logo_url || '',
-        categoria: emp.categoria || 'General',
-        valoracion: Number(emp.valoracion) || 0,
-        entregasCompletadas: Number(emp.entregas_completadas) || 0,
-        direccion: emp.direccion || '',
-        telefono: emp.telefono || '',
-        email: emp.email || '',
-        horarioApertura: emp.horario_apertura || '',
-        horarioCierre: emp.horario_cierre || '',
-        activo: emp.activo === 1,
-        fechaRegistro: emp.fecha_registro
-      },
-      timestamp: new Date().toISOString()
-    });
-
-  } catch (error) {
-    console.error('❌ Error obtenint empresa:', error);
-    return res.status(500).json({
-      success: false,
-      error: 'Error intern del servidor'
+      message: error.message
     });
   }
 };
@@ -272,6 +194,5 @@ module.exports = {
   getUserStats,
   healthCheck,
   getGlobalStats,
-  getEmpresasDisponibles,
-  getEmpresaById
+  getEmpresasDisponibles
 };
