@@ -154,7 +154,7 @@ const getEmpresasDisponibles = async (req, res) => {
       `SELECT 
         id,
         nombre,
-        logo_url,
+        logo,
         descripcion,
         categoria,
         activo
@@ -170,7 +170,7 @@ const getEmpresasDisponibles = async (req, res) => {
       empresas: empresas.map(emp => ({
         id: emp.id,
         nombre: emp.nombre,
-        logoUrl: emp.logo_url || '',
+        logoUrl: emp.logo || '',
         descripcion: emp.descripcion || '',
         categoria: emp.categoria || 'General',
         activo: emp.activo === 1
