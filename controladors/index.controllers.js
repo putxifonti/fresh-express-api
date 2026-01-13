@@ -9,9 +9,9 @@ const mysql = require('mysql2/promise');
 // Crear pool de connexions a MySQL
 const pool = mysql.createPool({
   host: 'localhost',
-  user: 'api',
+  user: 'api2',                    
   password: 'la_teva_contrasenya', 
-  database: 'freshexpress_operacional',
+  database: 'freshexpress',
   port: 3306,
   waitForConnections: true,
   connectionLimit: 10,
