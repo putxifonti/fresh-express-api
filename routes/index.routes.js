@@ -3,12 +3,18 @@ const router = Router();
 const { 
   getUserStats, 
   healthCheck, 
-  getGlobalStats 
+  getGlobalStats,
+  getEmpresasDisponibles,  
+  getEmpresaById           
 } = require('../controladors/index.controllers');
 
-// ⭐ ORDRE IMPORTANT: Rutes específiques ABANS de rutes amb paràmetres
+// Health check
 router.get('/health', healthCheck);
-router.get('/stats/global', getGlobalStats);        // ⚠️ Aquesta ABANS
-router.get('/stats/:userId', getUserStats);         // ⚠️ Aquesta DESPRÉS
+
+// Estadístiques
+router.get('/stats/global', getGlobalStats);
+router.get('/stats/:userId', getUserStats);
+router.get('/empresas', getEmpresasDisponibles);
+router.get('/empresas/:empresaId', getEmpresaById);
 
 module.exports = router;
