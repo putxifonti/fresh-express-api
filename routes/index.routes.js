@@ -6,13 +6,9 @@ const {
   getGlobalStats 
 } = require('../controladors/index.controllers');
 
-// ⭐ NOVES RUTES PER FRESHEXPRESS
+// ⭐ ORDRE IMPORTANT: Rutes específiques ABANS de rutes amb paràmetres
 router.get('/health', healthCheck);
-router.get('/stats/:userId', getUserStats);
-router.get('/stats/global', getGlobalStats);
-
-// Rutes antigues (comentades)
-// router.get('/obtenirfotospubliques', obtenirFotosPubliques);
-// router.post('/alta', inserirUsuari);
+router.get('/stats/global', getGlobalStats);        // ⚠️ Aquesta ABANS
+router.get('/stats/:userId', getUserStats);         // ⚠️ Aquesta DESPRÉS
 
 module.exports = router;

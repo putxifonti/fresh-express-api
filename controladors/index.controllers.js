@@ -11,7 +11,7 @@ const pool = mysql.createPool({
   host: 'localhost',
   user: 'api2',                    
   password: 'la_teva_contrasenya', 
-  database: 'freshexpress',
+  database: 'freshexpress_operacional',
   port: 3306,
   waitForConnections: true,
   connectionLimit: 10,
